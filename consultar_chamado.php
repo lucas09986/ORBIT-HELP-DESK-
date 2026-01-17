@@ -1,6 +1,44 @@
-<?php 
-  require_once "validador.php"
-?>
+<?php
+
+// Inicializa a variável como array vazio para evitar o erro de "Variável indefinida"
+$chamados = array();
+
+// Tenta abrir o arquivo. O '@' suprime avisos caso o arquivo não exista.
+$arquivo = @fopen('arquivo.hd', 'r');
+
+// Verifica se o arquivo foi aberto com sucesso antes de tentar ler
+if ($arquivo) {
+    
+    // Loop de leitura do arquivo
+    while(!feof($arquivo)) {
+
+        $registro = fgets($arquivo);
+        
+        // Ignora linhas vazias ou que contenham apenas espaços/quebras de linha
+        if (empty(trim($registro))) {
+            continue;
+        }
+
+        // Remove espaços em branco e quebras de linha do início e fim da string
+        $registro = trim($registro);
+
+        // Separa os dados usando o delimitador '|' (pipe)
+        $dados = explode('|', $registro);
+
+        //  Verifica se a linha tem o número correto de campos (3)
+        if (count($dados) >= 3) {
+            // Adiciona o array de dados do chamado ao array principal $chamados
+            $chamados[] = $dados;
+        }
+        // Linhas com menos de 3 campos serão ignoradas, evitando o erro de "Chave de array indefinida"
+    }
+
+    fclose($arquivo);
+}
+
+?>  
+
+
 <html>
   <head>
     <meta charset="utf-8" />
@@ -22,13 +60,13 @@
     <nav class="navbar navbar-dark bg-dark">
       <a class="navbar-brand" href="#">
         <img src="logo.png" width="30" height="30" class="d-inline-block align-top" alt="">
-         Orbit Help Desk
+          Orbit Help Desk
       </a>
-       <ul class="navbar-nav">
-        <li class="nav-item">
+        <ul class="navbar-nav">
+         <li class="nav-item">
           <a class="nav-link" href="logoff.php">SAIR</a>
-        </li>
-    </nav>
+         </li>
+     </nav>
 
     <div class="container">    
       <div class="row">
@@ -40,25 +78,25 @@
             </div>
             
             <div class="card-body">
-              
-              <div class="card mb-3 bg-light">
-                <div class="card-body">
-                  <h5 class="card-title">Título do chamado...</h5>
-                  <h6 class="card-subtitle mb-2 text-muted">Categoria</h6>
-                  <p class="card-text">Descrição do chamado...</p>
+            <?php foreach($chamados as $chamado ) { ?>
+            
+            <?php
+                // Atribui os valores do array $chamado a variáveis para facilitar a leitura
+                // Como a verificação de count($dados) >= 3 foi feita, esses índices são seguros
+                $titulo = $chamado[0];
+                $categoria = $chamado[1];
+                $descricao = $chamado[2];
+            ?>
 
-                </div>
+            <div class="card mb-3 bg-light">
+              <div class="card-body">
+                <!-- Exibe os dados dinamicamente -->
+                <h5 class="card-title"><?php echo $titulo; ?></h5>
+                <h6 class="card-subtitle mb-2 text-muted"><?php echo $categoria; ?></h6>
+                <p class="card-text"><?php echo $descricao; ?></p>
               </div>
-
-              <div class="card mb-3 bg-light">
-                <div class="card-body">
-                  <h5 class="card-title">Título do chamado...</h5>
-                  <h6 class="card-subtitle mb-2 text-muted">Categoria</h6>
-                  <p class="card-text">Descrição do chamado...</p>
-
-                </div>
-              </div>
-
+            </div>
+            <?php } ?>
               <div class="row mt-5">
                 <div class="col-6">
                   <a href="home.php">
@@ -73,3 +111,4 @@
     </div>
   </body>
 </html>
+

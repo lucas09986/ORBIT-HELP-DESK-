@@ -44,7 +44,7 @@
                 </div>
                 <div class="col-6 d-flex justify-content-center">
                   <a href="consultar_chamado.php">
-                  <img src="formulario_consultar_chamado.png" width="70" height="70">
+                  <img src="formulario_consultar_chamado.webp" width="70" height="70">
                   </a>
                 </div>
               </div>
